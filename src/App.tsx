@@ -82,7 +82,7 @@ function App() {
           )}
           {activeTab === "severance" && (
             <div className="w-full h-full overflow-y-auto">
-              <SeveranceCalculator lang={lang} />
+              <SeveranceCalculator />
             </div>
           )}
           {activeTab === "remit" && (
