@@ -1,0 +1,12 @@
+/* 캄보디아(Khmer), 미얀마(Myanmar) 폰트 추가 */
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&family=Noto+Sans+Khmer:wght@400;700&family=Noto+Sans+Myanmar:wght@400;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  /* 폰트 우선순위: 한국어 -> 캄보디아 -> 미얀마 -> 기본 */
+  font-family: "Noto Sans KR", "Noto Sans Khmer", "Noto Sans Myanmar",
+    sans-serif;
+}
