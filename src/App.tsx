@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import SalaryCalculator from "./SalaryCalculator";
 import SeveranceCalculator from "./SeveranceCalculator";
 

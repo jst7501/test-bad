@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 
 // =========================================================
 // [NEW] 숫자 애니메이션 마법 주문
