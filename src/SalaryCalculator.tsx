@@ -614,33 +614,8 @@ export default function SalaryCalculator({ lang }: { lang: string }) {
           );
         })}
       </div>
-
-      {/* 4. 구매력 (재미) */}
-      <div className="bg-indigo-600 rounded-2xl p-4 text-white shadow-lg mb-6 transition-all hover:scale-[1.02]">
-        <h3 className="mb-3 text-sm font-bold opacity-90">🛍️ {t.funTitle}</h3>
-        <div className="flex flex-col gap-3 pb-2 overflow-x-auto scrollbar-hide">
-          {Object.entries(FUN_PRICES).map(([key, price]) => {
-            const count = Math.floor(result.net / price);
-            return (
-              <div
-                key={key}
-                className="bg-white text-gray-800 p-2 rounded-xl min-w-[70px] flex-shrink-0 flex flex-col items-center shadow-md transition-transform active:scale-95"
-              >
-                <div className="text-xl">{(ICONS as any)[key]}</div>
-                <div className="text-lg font-extrabold text-indigo-600 transition-all">
-                  {useAnimatedNumber(count).toFixed(0)}
-                </div>
-                <div className="text-[9px] text-gray-400 font-bold truncate w-full text-center">
-                  {(t.items as any)[key]}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
       {/* 5. 상세 명세서 (하단 고정) */}
-      <div className="fixed bottom-20 left-0 right-0 bg-white border-t rounded-t-2xl shadow-[0_-5px_20px_rgba(0,0,0,0.1)] p-5 z-20 max-w-sm mx-auto overflow-y-auto max-h-[40vh] transition-all">
+      <div className=" left-0 right-0 mb-10 bg-white  shadow-[0_-5px_20px_rgba(0,0,0,0.1)] p-5 z-20 max-w-sm mx-auto overflow-y-auto max-h-[40vh] transition-all">
         <div className="flex items-center justify-between pb-2 mb-3 border-b">
           <span className="font-bold text-gray-800">{t.totalNet}</span>
           <span className="text-xs font-bold text-green-600">
@@ -712,6 +687,29 @@ export default function SalaryCalculator({ lang }: { lang: string }) {
               {Math.round(animatedExchangedPay).toLocaleString()}
             </span>
           </div>
+        </div>
+      </div>
+      {/* 4. 구매력 (재미) */}
+      <div className="bg-indigo-600 rounded-2xl p-4 text-white shadow-lg mb-6 transition-all hover:scale-[1.02]">
+        <h3 className="mb-3 text-sm font-bold opacity-90">🛍️ {t.funTitle}</h3>
+        <div className="flex flex-col gap-3 pb-2 overflow-x-auto scrollbar-hide">
+          {Object.entries(FUN_PRICES).map(([key, price]) => {
+            const count = Math.floor(result.net / price);
+            return (
+              <div
+                key={key}
+                className="bg-white text-gray-800 p-2 rounded-xl min-w-[70px] flex-shrink-0 flex flex-col items-center shadow-md transition-transform active:scale-95"
+              >
+                <div className="text-xl">{(ICONS as any)[key]}</div>
+                <div className="text-lg font-extrabold text-indigo-600 transition-all">
+                  {useAnimatedNumber(count).toFixed(0)}
+                </div>
+                <div className="text-[9px] text-gray-400 font-bold truncate w-full text-center">
+                  {(t.items as any)[key]}
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
 
