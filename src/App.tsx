@@ -1,53 +1,52 @@
 import { useState, useEffect } from "react";
 import SalaryCalculator from "./SalaryCalculator";
 import SeveranceCalculator from "./SeveranceCalculator";
+import RemittanceAnalyzer from "./RemittanceAnalyzer"; // <--- Import 추가
 
-// ---------------------------------------------------------
-// 🌍 5개국어 번역 데이터베이스
-// ---------------------------------------------------------
 export const TRANSLATIONS: any = {
   kr: {
     name: "한국어",
     tabSalary: "급여 계산기",
     tabSeverance: "퇴직금 계산기",
+    tabRemit: "송금 분석",
   },
   vn: {
-    name: "Tiếng Việt", // 베트남
+    name: "Tiếng Việt",
     tabSalary: "Tính Lương",
     tabSeverance: "Tiền Thưởng",
+    tabRemit: "Gửi Tiền",
   },
   kh: {
-    name: "ខ្មែរ", // 캄보디아
+    name: "ខ្មែរ",
     tabSalary: "គណនាប្រាក់ខែ",
     tabSeverance: "ប្រាក់បំណាច់",
+    tabRemit: "ផ្ញើប្រាក់",
   },
   mm: {
-    name: "မြန်မာ", // 미얀마
+    name: "မြန်မာ",
     tabSalary: "လစာတွက်မယ်",
     tabSeverance: "လုပ်သက်ဆုကြေး",
+    tabRemit: "ငွေလွှဲ",
   },
   uz: {
-    name: "O'zbek", // 우즈벡
+    name: "O'zbek",
     tabSalary: "Oylik Hisoblash",
     tabSeverance: "Ishdan bo'shash",
+    tabRemit: "Pul Yuborish",
   },
 };
 
 function App() {
-  const [activeTab, setActiveTab] = useState<"salary" | "severance">("salary");
-
-  // 언어 설정 (기본값: 한국어 'kr')
+  const [activeTab, setActiveTab] = useState<"salary" | "severance" | "remit">(
+    "salary"
+  ); // remit 추가
   const [lang, setLang] = useState("kr");
 
-  // 로컬스토리지에서 언어 불러오기
   useEffect(() => {
     const savedLang = localStorage.getItem("app-language");
-    if (savedLang && TRANSLATIONS[savedLang]) {
-      setLang(savedLang);
-    }
+    if (savedLang && TRANSLATIONS[savedLang]) setLang(savedLang);
   }, []);
 
-  // 언어 변경 시 저장
   const handleLangChange = (newLang: string) => {
     setLang(newLang);
     localStorage.setItem("app-language", newLang);
@@ -58,8 +57,8 @@ function App() {
   return (
     <div className="flex flex-col items-center min-h-screen font-sans bg-gray-50">
       <div className="w-full max-w-sm bg-white shadow-2xl h-[100dvh] flex flex-col relative border-x border-gray-100">
-        {/* 🌍 언어 선택 바 (상단 고정) */}
-        <div className="z-50 flex items-center justify-between p-3 bg-white border-b">
+        {/* 언어 선택 바 */}
+        <div className="z-50 flex items-center justify-between p-3 bg-white border-b shrink-0">
           <span className="text-lg font-bold text-gray-800">💰 PayDay</span>
           <select
             value={lang}
@@ -75,25 +74,29 @@ function App() {
         </div>
 
         {/* 콘텐츠 영역 */}
-        <div className="relative flex-1 overflow-hidden">
+        <div className="relative flex-1 w-full overflow-hidden">
           {activeTab === "salary" && (
-            <div className="h-full pb-20 overflow-y-auto">
-              {/* 자식 컴포넌트에 언어 코드(lang) 전달 */}
+            <div className="w-full h-full overflow-y-auto">
               <SalaryCalculator lang={lang} />
             </div>
           )}
           {activeTab === "severance" && (
-            <div className="h-full pb-20 overflow-y-auto">
-              <SeveranceCalculator />
+            <div className="w-full h-full overflow-y-auto">
+              <SeveranceCalculator lang={lang} />
+            </div>
+          )}
+          {activeTab === "remit" && (
+            <div className="w-full h-full overflow-y-auto">
+              <RemittanceAnalyzer lang={lang} />
             </div>
           )}
         </div>
 
-        {/* 하단 탭바 */}
+        {/* 하단 탭바 (3개로 확장) */}
         <div className="bg-white border-t border-gray-200 flex justify-around p-2 z-50 shrink-0 safe-area-bottom shadow-[0_-5px_15px_rgba(0,0,0,0.05)]">
           <button
             onClick={() => setActiveTab("salary")}
-            className={`flex-1 p-2 rounded-xl flex flex-col items-center transition active:scale-95 ${
+            className={`flex-1 p-2 rounded-xl flex flex-col items-center transition ${
               activeTab === "salary"
                 ? "bg-green-50 text-green-700"
                 : "text-gray-400 hover:bg-gray-50"
@@ -104,8 +107,20 @@ function App() {
           </button>
 
           <button
+            onClick={() => setActiveTab("remit")}
+            className={`flex-1 p-2 rounded-xl flex flex-col items-center transition ${
+              activeTab === "remit"
+                ? "bg-blue-50 text-blue-700"
+                : "text-gray-400 hover:bg-gray-50"
+            }`}
+          >
+            <span className="mb-1 text-2xl">💸</span>
+            <span className="text-[10px] font-bold">{t.tabRemit}</span>
+          </button>
+
+          <button
             onClick={() => setActiveTab("severance")}
-            className={`flex-1 p-2 rounded-xl flex flex-col items-center transition active:scale-95 ${
+            className={`flex-1 p-2 rounded-xl flex flex-col items-center transition ${
               activeTab === "severance"
                 ? "bg-teal-50 text-teal-700"
                 : "text-gray-400 hover:bg-gray-50"
