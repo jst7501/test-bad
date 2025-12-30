@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 
 // =========================================================
 // 1. 설정 및 언어별 통화 매핑
@@ -439,3 +439,226 @@ export default function RemittanceAnalyzer({ lang }: { lang: string }) {
     </div>
   );
 }
+
+// =========================================================
+// [Helper] 베지에 곡선 생성을 위한 수학 함수
+// =========================================================
+const getControlPoint = (
+  current: number[],
+  previous: number[],
+  next: number[],
+  reverse?: boolean
+) => {
+  const p = previous || current;
+  const n = next || current;
+  const smoothing = 0.2; // 곡선의 부드러움 정도 (0 ~ 1)
+  const o = line(p, n);
+  const angle = o.angle + (reverse ? Math.PI : 0);
+  const length = o.length * smoothing;
+  const x = current[0] + Math.cos(angle) * length;
+  const y = current[1] + Math.sin(angle) * length;
+  return [x, y];
+};
+
+const line = (pointA: number[], pointB: number[]) => {
+  const lengthX = pointB[0] - pointA[0];
+  const lengthY = pointB[1] - pointA[1];
+  return {
+    length: Math.sqrt(Math.pow(lengthX, 2) + Math.pow(lengthY, 2)),
+    angle: Math.atan2(lengthY, lengthX),
+  };
+};
+
+const createBezierCommand = (point: number[], i: number, a: number[][]) => {
+  const [cpsX, cpsY] = getControlPoint(a[i - 1], a[i - 2], point);
+  const [cpeX, cpeY] = getControlPoint(point, a[i - 1], a[i + 1], true);
+  return `C ${cpsX},${cpsY} ${cpeX},${cpeY} ${point[0]},${point[1]}`;
+};
+
+const svgPath = (
+  points: number[][],
+  command: (point: number[], i: number, a: number[][]) => string
+) => {
+  const d = points.reduce(
+    (acc, point, i, a) =>
+      i === 0 ? `M ${point[0]},${point[1]}` : `${acc} ${command(point, i, a)}`,
+    ""
+  );
+  return d;
+};
+
+// =========================================================
+// [Component] 예쁜 영역 차트
+// =========================================================
+interface ChartProps {
+  data: number[];
+  labels?: string[]; // ["1월", "2월"...]
+  color: string;
+  height?: number;
+}
+
+export const PrettyAreaChart2 = ({
+  data,
+  labels,
+  color = "#4F46E5", // Indigo-600
+  height = 120,
+}: ChartProps) => {
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+
+  // 데이터가 없으면 렌더링 안 함
+  if (!data || data.length === 0) return null;
+
+  const width = 300; // 내부 SVG 좌표계 기준 너비
+  const padding = 10;
+
+  // 계산 로직 Memoization
+  const { pathD, areaD, points } = useMemo(() => {
+    const max = Math.max(...data);
+    const min = Math.min(...data);
+    const range = max - min || 1;
+
+    // 좌표 계산 (x, y)
+    const pts = data.map((val, i) => {
+      const x = (i / (data.length - 1)) * width;
+      // y축 여백을 줘서 잘리지 않게 함 (height * 0.6 사용)
+      const y = height - ((val - min) / range) * (height * 0.6) - padding * 2;
+      return [x, y + padding]; // 상단 padding 추가
+    });
+
+    // 곡선 경로 생성
+    const curve = svgPath(pts, createBezierCommand);
+
+    // 영역 채우기 경로 (곡선 + 바닥 닫기)
+    const area = `${curve} L ${width},${height} L 0,${height} Z`;
+
+    return { pathD: curve, areaD: area, points: pts };
+  }, [data, height]);
+
+  return (
+    <div className="relative w-full select-none" style={{ height }}>
+      <svg
+        width="100%"
+        height="100%"
+        viewBox={`-5 0 ${width + 10} ${height}`}
+        className="overflow-visible"
+        onMouseLeave={() => setActiveIndex(null)}
+      >
+        <defs>
+          {/* 1. 그라데이션 정의 */}
+          <linearGradient id={`gradient-${color}`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor={color} stopOpacity="0.3" />
+            <stop offset="100%" stopColor={color} stopOpacity="0.0" />
+          </linearGradient>
+
+          {/* 2. 글로우 효과 필터 (선이 빛나는 느낌) */}
+          <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="2" result="blur" />
+            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+          </filter>
+        </defs>
+
+        {/* 3. 영역 채우기 (Fill) */}
+        <path
+          d={areaD}
+          fill={`url(#gradient-${color})`}
+          className="transition-all duration-300 ease-out"
+        />
+
+        {/* 4. 곡선 라인 (Stroke) - 글로우 필터 적용 */}
+        <path
+          d={pathD}
+          fill="none"
+          stroke={color}
+          strokeWidth="3"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          filter="url(#glow)"
+          className="transition-all duration-300 ease-out"
+        />
+
+        {/* 5. 데이터 포인트 (Dot) */}
+        {points.map(([x, y], i) => {
+          const isActive = activeIndex === i;
+          return (
+            <g key={i} onClick={() => setActiveIndex(i)}>
+              {/* 터치 영역 확보를 위한 투명 원 */}
+              <circle
+                cx={x}
+                cy={y}
+                r="12"
+                fill="transparent"
+                onMouseEnter={() => setActiveIndex(i)}
+                className="cursor-pointer"
+              />
+
+              {/* 실제 보이는 점 */}
+              <circle
+                cx={x}
+                cy={y}
+                r={isActive ? 5 : 3}
+                fill="white"
+                stroke={color}
+                strokeWidth={isActive ? 3 : 2}
+                className="transition-all duration-200 ease-out pointer-events-none"
+              />
+            </g>
+          );
+        })}
+
+        {/* 6. 툴팁 (Tooltip) - 활성화된 점 위에 표시 */}
+        {activeIndex !== null && points[activeIndex] && (
+          <g
+            transform={`translate(${points[activeIndex][0]}, ${
+              points[activeIndex][1] - 10
+            })`}
+          >
+            {/* 툴팁 배경 */}
+            <rect
+              x="-35"
+              y="-30"
+              width="70"
+              height="24"
+              rx="6"
+              fill="#1F2937" // gray-800
+              className="shadow-lg animate-fade-in-up"
+            />
+            {/* 툴팁 꼬리 */}
+            <path d="M -4 -6 L 0 0 L 4 -6 Z" fill="#1F2937" />
+
+            {/* 툴팁 텍스트 (금액) */}
+            <text
+              x="0"
+              y="-14"
+              textAnchor="middle"
+              fill="white"
+              fontSize="10"
+              fontWeight="bold"
+              dominantBaseline="middle"
+            >
+              {data[activeIndex].toLocaleString()}
+            </text>
+          </g>
+        )}
+      </svg>
+
+      {/* 7. X축 레이블 (월 표시) */}
+      {labels && (
+        <div className="flex justify-between w-full px-1 mt-1">
+          {labels.map((label, i) => (
+            <span
+              key={i}
+              className={`text-[9px] font-bold transition-colors ${
+                activeIndex === i
+                  ? "text-indigo-600 scale-110"
+                  : "text-gray-400"
+              }`}
+              style={{ width: `${100 / labels.length}%`, textAlign: "center" }}
+            >
+              {label}
+            </span>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};

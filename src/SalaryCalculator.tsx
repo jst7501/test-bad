@@ -1,232 +1,14 @@
-import { useState, useEffect, useRef } from "react";
-
-// =========================================================
-// [NEW] 숫자 애니메이션 마법 주문
-// =========================================================
-function useAnimatedNumber(targetValue: number) {
-  const [displayValue, setDisplayValue] = useState(targetValue);
-  const startTimeRef = useRef<number | null>(null);
-  const startValueRef = useRef(targetValue);
-  const rafRef = useRef<number | null>(null);
-
-  useEffect(() => {
-    if (targetValue === displayValue) return;
-    startValueRef.current = displayValue;
-    startTimeRef.current = null;
-    if (rafRef.current) cancelAnimationFrame(rafRef.current);
-
-    const animate = (timestamp: number) => {
-      if (!startTimeRef.current) startTimeRef.current = timestamp;
-      const duration = 500;
-      const progress = Math.min(
-        (timestamp - startTimeRef.current) / duration,
-        1
-      );
-      const easedProgress = progress * (2 - progress);
-      const nextValue =
-        startValueRef.current +
-        (targetValue - startValueRef.current) * easedProgress;
-      setDisplayValue(nextValue);
-      if (progress < 1) rafRef.current = requestAnimationFrame(animate);
-      else setDisplayValue(targetValue);
-    };
-    rafRef.current = requestAnimationFrame(animate);
-    return () => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    };
-  }, [targetValue]);
-  return displayValue;
-}
-
-// ---------------------------------------------------------
-// 1. 데이터 및 설정
-// ---------------------------------------------------------
-const HOLIDAYS_2025: { [key: string]: string } = {
-  "2025-01-01": "신정",
-  "2025-01-27": "설날",
-  "2025-01-28": "설날",
-  "2025-01-29": "설날",
-  "2025-01-30": "대체공휴일",
-  "2025-03-01": "삼일절",
-  "2025-03-03": "대체공휴일",
-  "2025-05-05": "어린이날",
-  "2025-05-06": "대체공휴일",
-  "2025-06-06": "현충일",
-  "2025-08-15": "광복절",
-  "2025-10-03": "개천절",
-  "2025-10-05": "추석",
-  "2025-10-06": "추석",
-  "2025-10-07": "추석",
-  "2025-10-08": "대체공휴일",
-  "2025-10-09": "한글날",
-  "2025-12-25": "성탄절",
-};
-
-const TAX_RATES = { fourMajor: 0.094, freelance: 0.033, none: 0.0 };
-
-const FUN_PRICES = {
-  ramen: 1000,
-  coffee: 4500,
-  chicken: 20000,
-  flight: 600000,
-  iphone: 1500000,
-};
-const ICONS = {
-  ramen: "🍜",
-  coffee: "☕",
-  chicken: "🍗",
-  flight: "✈️",
-  iphone: "📱",
-};
-const TIERS_MIN = [0, 2000000, 3000000, 4000000];
-const TIER_ICONS = ["🥚", "🐥", "🐓", "👑"];
-
-// ---------------------------------------------------------
-// [핵심] 국가별 통화 매핑 (언어코드 -> 통화코드)
-// ---------------------------------------------------------
-const CURRENCY_MAP: any = {
-  kr: { code: "KRW", name: "Korea", symbol: "₩" },
-  vn: { code: "VND", name: "Vietnam", symbol: "₫" },
-  kh: { code: "KHR", name: "Cambodia", symbol: "៛" },
-  mm: { code: "MMK", name: "Myanmar", symbol: "Ks" },
-  uz: { code: "UZS", name: "Uzbekistan", symbol: "so'm" },
-};
-
-// ---------------------------------------------------------
-// 2. 다국어 사전
-// ---------------------------------------------------------
-const DICT: any = {
-  kr: {
-    hourly: "시급",
-    taxType: "세금",
-    allowance: "수당/보너스",
-    dormitory: "기숙사비",
-    advance: "가불금",
-    basicPay: "기본급",
-    otPay: "잔업수당",
-    juhyuPay: "주휴수당",
-    taxDeduct: "세금공제",
-    totalNet: "실수령액",
-    save: "저장",
-    close: "닫기",
-    basicHour: "기본 8h",
-    otHour: "잔업(1.5배)",
-    guide: "짧게=8시간 / 길게=시간수정",
-    funTitle: "내 월급으로 살 수 있는 것",
-    tiers: ["알", "병아리", "닭", "황금닭"],
-    items: {
-      ramen: "라면",
-      coffee: "커피",
-      chicken: "치킨",
-      flight: "비행기표",
-      iphone: "아이폰",
-    },
-  },
-  vn: {
-    hourly: "Lương giờ",
-    taxType: "Thuế",
-    allowance: "Phụ cấp",
-    dormitory: "Tiền phòng",
-    advance: "Tạm ứng",
-    basicPay: "Lương cơ bản",
-    otPay: "Tiền tăng ca",
-    juhyuPay: "Trợ cấp tuần",
-    taxDeduct: "Trừ thuế",
-    totalNet: "Thực nhận",
-    save: "Lưu",
-    close: "Đóng",
-    basicHour: "Cơ bản 8h",
-    otHour: "Tăng ca (1.5)",
-    guide: "Chạm=8h / Giữ=Sửa",
-    funTitle: "Bạn có thể mua gì?",
-    tiers: ["Trứng", "Gà con", "Gà", "Gà vàng"],
-    items: {
-      ramen: "Mì gói",
-      coffee: "Cà phê",
-      chicken: "Gà rán",
-      flight: "Vé máy bay",
-      iphone: "iPhone",
-    },
-  },
-  kh: {
-    hourly: "ប្រាក់ម៉ោង",
-    taxType: "ពន្ធ",
-    allowance: "ប្រាក់ឧបត្ថម្ភ",
-    dormitory: "ថ្លៃឈ្នួលផ្ទះ",
-    advance: "បើកលុយមុន",
-    basicPay: "ប្រាក់គោល",
-    otPay: "ថែមម៉ោង",
-    juhyuPay: "ប្រាក់ឈប់សម្រាក",
-    taxDeduct: "កាត់ពន្ធ",
-    totalNet: "ប្រាក់ទទួលបាន",
-    save: "រក្សាទុក",
-    close: "បិទ",
-    basicHour: "ម៉ោងគោល",
-    otHour: "ថែមម៉ោង",
-    guide: "ចុចខ្លី=៨ម៉ោង / ចុចយូរ=កែប្រែ",
-    funTitle: "តើអ្នកអាចទិញអ្វីបាន?",
-    tiers: ["ពង", "កូនមាន់", "មាន់", "មាន់មាស"],
-    items: {
-      ramen: "មី",
-      coffee: "កាហ្វេ",
-      chicken: "មាន់បំពង",
-      flight: "សំបុត្រយន្តហោះ",
-      iphone: "iPhone",
-    },
-  },
-  mm: {
-    hourly: "တစ်နာရီလုပ်ခ",
-    taxType: "အခွန်",
-    allowance: "ထောက်ပံ့ကြေး",
-    dormitory: "အဆောင်ခ",
-    advance: "ကြိုထုတ်ငွေ",
-    basicPay: "အခြေခံလစာ",
-    otPay: "အချိန်ပိုကြေး",
-    juhyuPay: "ရက်မှန်ကြေး",
-    taxDeduct: "အခွန်ဖြတ်",
-    totalNet: "စုစုပေါင်းရငွေ",
-    save: "သိမ်းမည်",
-    close: "ပိတ်မည်",
-    basicHour: "ပုံမှန် ၈နာရီ",
-    otHour: "အချိန်ပို",
-    guide: "တချက်နှိပ်=၈နာရီ / ဖိနှိပ်=ပြင်မည်",
-    funTitle: "ဘာတွေဝယ်လို့ရမလဲ",
-    tiers: ["ဥ", "ကြက်ပေါက်", "ကြက်", "ရွှေကြက်"],
-    items: {
-      ramen: "ခေါက်ဆွဲ",
-      coffee: "ကော်ဖီ",
-      chicken: "ကြက်ကြော်",
-      flight: "လေယာဉ်လက်မှတ်",
-      iphone: "iPhone",
-    },
-  },
-  uz: {
-    hourly: "Soatlik haq",
-    taxType: "Soliq",
-    allowance: "Bonus",
-    dormitory: "Yotoqxona",
-    advance: "Avans",
-    basicPay: "Asosiy oylik",
-    otPay: "Qo'shimcha ish",
-    juhyuPay: "Dam olish puli",
-    taxDeduct: "Soliq ushlanmasi",
-    totalNet: "Qo'lga tegadigan",
-    save: "Saqlash",
-    close: "Yopish",
-    basicHour: "Asosiy 8s",
-    otHour: "Qo'shimcha",
-    guide: "Bosish=8s / Bosib turish=Tahrirlash",
-    funTitle: "Nima sotib olsa bo'ladi?",
-    tiers: ["Tuxum", "Jo'ja", "Tovuq", "Oltin Tovuq"],
-    items: {
-      ramen: "Ramen",
-      coffee: "Qahva",
-      chicken: "Tovuq",
-      flight: "Chipta",
-      iphone: "iPhone",
-    },
-  },
-};
+import { useState, useEffect, useRef, useMemo } from "react";
+import {
+  HOLIDAYS,
+  DICT,
+  CURRENCY_MAP,
+  TAX_RATES,
+  TIERS_MIN,
+  TIER_ICONS,
+} from "./constants";
+import { useAnimatedNumber } from "./hooks/useAnimatedNumber";
+import { PrettyAreaChart2 } from "./RemittanceAnalyzer";
 
 interface DayLog {
   basic: number;
@@ -235,14 +17,22 @@ interface DayLog {
 interface WorkLog {
   [date: string]: DayLog;
 }
+// 급여 히스토리 타입 정의
+interface SalaryHistory {
+  [monthKey: string]: number; // "YYYY-MM": netPay
+}
 
 export default function SalaryCalculator({ lang }: { lang: string }) {
   const t = DICT[lang] || DICT["kr"];
-  const currencyInfo = CURRENCY_MAP[lang] || CURRENCY_MAP["kr"]; // 현재 언어에 맞는 통화 정보
+  const currencyInfo = CURRENCY_MAP[lang] || CURRENCY_MAP["kr"];
 
   const [currentDate, setCurrentDate] = useState(new Date());
 
+  // 데이터 상태
   const [workLog, setWorkLog] = useState<WorkLog>({});
+  const [history, setHistory] = useState<SalaryHistory>({}); // [New] 급여 기록
+
+  // 설정 상태
   const [hourlyWage, setHourlyWage] = useState(10030);
   const [taxMode, setTaxMode] = useState<"fourMajor" | "freelance" | "none">(
     "fourMajor"
@@ -251,9 +41,7 @@ export default function SalaryCalculator({ lang }: { lang: string }) {
   const [bonus, setBonus] = useState(0);
   const [advance, setAdvance] = useState(0);
 
-  // [수정] 모든 환율 정보를 담을 객체
   const [allRates, setAllRates] = useState<any>({});
-
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [tempBasic, setTempBasic] = useState(8);
   const [tempOt, setTempOt] = useState(0);
@@ -263,10 +51,11 @@ export default function SalaryCalculator({ lang }: { lang: string }) {
   const isLongPress = useRef(false);
   const isPressing = useRef(false);
 
-  // 로컬스토리지 로드 & 환율 API 호출
+  // 1. 초기 로드
   useEffect(() => {
     const savedLog = localStorage.getItem("final-work-log");
     if (savedLog) setWorkLog(JSON.parse(savedLog));
+
     const savedSettings = localStorage.getItem("final-settings");
     if (savedSettings) {
       const parsed = JSON.parse(savedSettings);
@@ -277,7 +66,10 @@ export default function SalaryCalculator({ lang }: { lang: string }) {
       setAdvance(parsed.advance ?? 0);
     }
 
-    // [핵심] 모든 통화에 대한 환율 가져오기
+    // [New] 히스토리 로드
+    const savedHistory = localStorage.getItem("salary-history");
+    if (savedHistory) setHistory(JSON.parse(savedHistory));
+
     fetch("https://api.exchangerate-api.com/v4/latest/KRW")
       .then((res) => res.json())
       .then((d) => {
@@ -288,7 +80,7 @@ export default function SalaryCalculator({ lang }: { lang: string }) {
     setIsLoaded(true);
   }, []);
 
-  // 저장
+  // 2. 데이터 저장 (WorkLog & Settings)
   useEffect(() => {
     if (!isLoaded) return;
     localStorage.setItem("final-work-log", JSON.stringify(workLog));
@@ -344,7 +136,6 @@ export default function SalaryCalculator({ lang }: { lang: string }) {
     }
   };
 
-  // 계산 로직
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
 
@@ -363,18 +154,22 @@ export default function SalaryCalculator({ lang }: { lang: string }) {
           d
         ).padStart(2, "0")}`;
         const day = new Date(year, month, d).getDay();
-        const isHoli = HOLIDAYS_2025[k] !== undefined;
+        const isHoli = HOLIDAYS[k] !== undefined;
         if (day !== 0 && day !== 6 && !isHoli) newLog[k] = { basic: 8, ot: 0 };
       }
       setWorkLog(newLog);
     }
   }, [year, month, isLoaded]);
 
-  const calculate = () => {
+  // 계산 로직 (주휴수당 개근 조건 포함)
+  const result = useMemo(() => {
     let totalBasic = 0,
       totalOt = 0,
       juhyuCount = 0;
-    const weeklyHours = [0, 0, 0, 0, 0, 0];
+    const weeks = Array.from({ length: 6 }, () => ({
+      hours: 0,
+      hasAbsence: false,
+    }));
     const firstDay = new Date(year, month, 1).getDay();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
 
@@ -383,40 +178,83 @@ export default function SalaryCalculator({ lang }: { lang: string }) {
         d
       ).padStart(2, "0")}`;
       const log = workLog[k];
+      const day = new Date(year, month, d).getDay();
+      const isHoli = HOLIDAYS[k] !== undefined;
+      const isWeekend = day === 0 || day === 6;
+      const wIdx = Math.floor((d + firstDay - 1) / 7);
+
       if (log) {
-        const day = new Date(year, month, d).getDay();
-        const isHoli = HOLIDAYS_2025[k] !== undefined;
-        const isWeekend = day === 0 || day === 6;
-        const wIdx = Math.floor((d + firstDay - 1) / 7);
         const hours = log.basic + log.ot;
-        if (isWeekend || isHoli) totalOt += hours * hourlyWage * 1.5;
-        else {
+        if (isWeekend || isHoli) {
+          totalOt += hours * hourlyWage * 1.5;
+        } else {
           totalBasic += log.basic * hourlyWage;
           totalOt += log.ot * hourlyWage * 1.5;
-          weeklyHours[wIdx] += log.basic;
+          weeks[wIdx].hours += log.basic;
         }
       }
+      const isMonToFri = day >= 1 && day <= 5;
+      const worked = log && log.basic > 0;
+      if (isMonToFri) {
+        if (!worked && !isHoli) weeks[wIdx].hasAbsence = true;
+      }
     }
-    weeklyHours.forEach((h) => {
-      if (h >= 15) juhyuCount++;
+
+    weeks.forEach((week) => {
+      if (week.hours >= 15 && !week.hasAbsence) juhyuCount++;
     });
+
     const totalJuhyu = juhyuCount * 8 * hourlyWage;
     const gross = totalBasic + totalOt + totalJuhyu + bonus;
     const tax = Math.floor(gross * TAX_RATES[taxMode]);
     const net = gross - tax - dormCost - advance;
+
     return { totalBasic, totalOt, totalJuhyu, juhyuCount, tax, net, gross };
-  };
-  const result = calculate();
+  }, [workLog, hourlyWage, taxMode, dormCost, bonus, advance, year, month]);
+
+  // [New] 결과가 나오면 히스토리에 자동 저장
+  useEffect(() => {
+    if (!isLoaded) return;
+    const currentMonthKey = `${year}-${String(month + 1).padStart(2, "0")}`;
+
+    setHistory((prev) => {
+      // 값이 변했을 때만 업데이트하여 불필요한 렌더링 방지
+      if (prev[currentMonthKey] === result.net) return prev;
+
+      const newHistory = { ...prev, [currentMonthKey]: result.net };
+      localStorage.setItem("salary-history", JSON.stringify(newHistory));
+      return newHistory;
+    });
+  }, [result.net, year, month, isLoaded]);
+
+  // -----------------------------------------------------------
+  // [New] 그래프 데이터 생성 (최근 6개월)
+  // -----------------------------------------------------------
+  const graphData = useMemo(() => {
+    const data = [];
+
+    const labels = [];
+    // ... 기존 데이터 생성 로직 ...
+    // 대신 data 배열과 labels 배열을 각각 분리해서 만듭니다.
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date(year, month - i, 1);
+      const m = d.getMonth() + 1;
+      const key = `${d.getFullYear()}-${String(m).padStart(2, "0")}`;
+      const val = i === 0 ? result.net : history[key] || 0;
+
+      data.push(val);
+      labels.push(`${m}월`);
+    }
+    return { data, labels };
+  }, [history, result.net, year, month]);
+
   const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  // [환율 계산] 현재 선택된 언어의 통화 코드로 환산
   const targetRate = allRates[currencyInfo.code] || 1;
   const exchangedAmount = Math.floor(result.net * targetRate);
 
-  // 애니메이션 적용
   const animatedNetPay = useAnimatedNumber(result.net);
   const animatedExchangedPay = useAnimatedNumber(exchangedAmount);
 
-  // 계급 계산
   let tierIdx = 0;
   TIERS_MIN.forEach((min, idx) => {
     if (result.net >= min) tierIdx = idx;
@@ -435,20 +273,20 @@ export default function SalaryCalculator({ lang }: { lang: string }) {
           </div>
           <div>
             <div className="text-xs font-bold text-gray-400">Level</div>
-            <div className="text-lg font-extrabold text-gray-800 transition-all duration-300">
+            <div className="text-lg font-extrabold text-gray-800">
               {t.tiers[tierIdx]}
             </div>
           </div>
         </div>
         <div className="text-right">
           <div className="text-xs font-bold text-gray-400">Est. (KRW)</div>
-          <div className="text-2xl font-black tracking-tight text-indigo-600 transition-all">
+          <div className="text-2xl font-black tracking-tight text-indigo-600">
             {Math.round(animatedNetPay).toLocaleString()}
           </div>
         </div>
       </div>
 
-      {/* 2. 컨트롤 (설정) */}
+      {/* 2. 설정 */}
       <details className="p-3 mb-4 bg-white border border-gray-100 shadow-sm rounded-xl group">
         <summary className="flex items-center justify-between text-xs font-bold text-gray-500 list-none cursor-pointer">
           <span>
@@ -522,10 +360,7 @@ export default function SalaryCalculator({ lang }: { lang: string }) {
         </div>
       </details>
 
-      {/* 3. 달력 */}
-      <div className="text-center text-[10px] text-gray-400 mb-2">
-        👆 {t.guide}
-      </div>
+      {/* 3. 달력 컨트롤 */}
       <div className="flex items-center justify-between px-2 mb-2">
         <button
           onClick={() => setCurrentDate(new Date(year, month - 1, 1))}
@@ -543,6 +378,7 @@ export default function SalaryCalculator({ lang }: { lang: string }) {
           ▶
         </button>
       </div>
+
       <div className="grid grid-cols-7 gap-1 mb-4 select-none">
         {DAYS.map((d, i) => (
           <div
@@ -567,7 +403,7 @@ export default function SalaryCalculator({ lang }: { lang: string }) {
             d
           ).padStart(2, "0")}`;
           const log = workLog[k];
-          const isHoli = HOLIDAYS_2025[k];
+          const isHoli = HOLIDAYS[k];
           const day = (firstDayIdx + i) % 7;
           let style = "bg-white border-gray-200";
           if (log) {
@@ -614,15 +450,45 @@ export default function SalaryCalculator({ lang }: { lang: string }) {
           );
         })}
       </div>
+
+      {/* 4. [NEW] 급여 추이 그래프 (최근 6개월) */}
+      <div className="p-5 mb-6 bg-white border border-gray-100 shadow-sm rounded-2xl">
+        <h3 className="flex items-center gap-2 mb-4 text-sm font-bold text-gray-700">
+          📊 급여 추이 (최근 6개월)
+        </h3>
+
+        {/* 여기에 PrettyAreaChart 적용 */}
+        <PrettyAreaChart2
+          data={graphData.data}
+          labels={graphData.labels}
+          color="#4F46E5" // Indigo 색상
+          height={140}
+        />
+
+        <div className="flex justify-between pt-4 mt-4 text-xs text-gray-500 border-t border-gray-50">
+          <span>
+            이번 달:{" "}
+            <b className="text-indigo-600">{result.net.toLocaleString()}</b>
+          </span>
+          <span>
+            평균:{" "}
+            <b>
+              {Math.round(
+                graphData.data.reduce((a, b) => a + b, 0) / 6
+              ).toLocaleString()}
+            </b>
+          </span>
+        </div>
+      </div>
+
       {/* 5. 상세 명세서 (하단 고정) */}
-      <div className=" left-0 right-0 mb-10 bg-white  shadow-[0_-5px_20px_rgba(0,0,0,0.1)] p-5 z-20 max-w-sm mx-auto overflow-y-auto max-h-[40vh] transition-all">
+      <div className="fixed bottom-0 left-0 right-0 bg-white shadow-[0_-5px_20px_rgba(0,0,0,0.1)] p-5 z-20 max-w-md mx-auto rounded-t-3xl max-h-[40vh] overflow-y-auto">
         <div className="flex items-center justify-between pb-2 mb-3 border-b">
           <span className="font-bold text-gray-800">{t.totalNet}</span>
           <span className="text-xs font-bold text-green-600">
             1 KRW ≈ {targetRate} {currencyInfo.code}
           </span>
         </div>
-
         <div className="mb-3 space-y-1 text-xs">
           <div className="flex justify-between text-gray-600">
             <span>{t.basicPay}</span>
@@ -678,7 +544,6 @@ export default function SalaryCalculator({ lang }: { lang: string }) {
             </span>
           </div>
           <div className="text-right">
-            {/* ▼▼▼ 선택된 국가 언어로 표시됨 ▼▼▼ */}
             <span className="block text-xs font-bold text-green-600">
               {currencyInfo.name} ({currencyInfo.code})
             </span>
@@ -687,29 +552,6 @@ export default function SalaryCalculator({ lang }: { lang: string }) {
               {Math.round(animatedExchangedPay).toLocaleString()}
             </span>
           </div>
-        </div>
-      </div>
-      {/* 4. 구매력 (재미) */}
-      <div className="bg-indigo-600 rounded-2xl p-4 text-white shadow-lg mb-6 transition-all hover:scale-[1.02]">
-        <h3 className="mb-3 text-sm font-bold opacity-90">🛍️ {t.funTitle}</h3>
-        <div className="flex flex-col gap-3 pb-2 overflow-x-auto scrollbar-hide">
-          {Object.entries(FUN_PRICES).map(([key, price]) => {
-            const count = Math.floor(result.net / price);
-            return (
-              <div
-                key={key}
-                className="bg-white text-gray-800 p-2 rounded-xl min-w-[70px] flex-shrink-0 flex flex-col items-center shadow-md transition-transform active:scale-95"
-              >
-                <div className="text-xl">{(ICONS as any)[key]}</div>
-                <div className="text-lg font-extrabold text-indigo-600 transition-all">
-                  {useAnimatedNumber(count).toFixed(0)}
-                </div>
-                <div className="text-[9px] text-gray-400 font-bold truncate w-full text-center">
-                  {(t.items as any)[key]}
-                </div>
-              </div>
-            );
-          })}
         </div>
       </div>
 
