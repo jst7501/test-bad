@@ -450,39 +450,8 @@ export default function SalaryCalculator({ lang }: { lang: string }) {
           );
         })}
       </div>
-
-      {/* 4. [NEW] 급여 추이 그래프 (최근 6개월) */}
-      <div className="p-5 mb-6 bg-white border border-gray-100 shadow-sm rounded-2xl">
-        <h3 className="flex items-center gap-2 mb-4 text-sm font-bold text-gray-700">
-          📊 급여 추이 (최근 6개월)
-        </h3>
-
-        {/* 여기에 PrettyAreaChart 적용 */}
-        <PrettyAreaChart2
-          data={graphData.data}
-          labels={graphData.labels}
-          color="#4F46E5" // Indigo 색상
-          height={140}
-        />
-
-        <div className="flex justify-between pt-4 mt-4 text-xs text-gray-500 border-t border-gray-50">
-          <span>
-            이번 달:{" "}
-            <b className="text-indigo-600">{result.net.toLocaleString()}</b>
-          </span>
-          <span>
-            평균:{" "}
-            <b>
-              {Math.round(
-                graphData.data.reduce((a, b) => a + b, 0) / 6
-              ).toLocaleString()}
-            </b>
-          </span>
-        </div>
-      </div>
-
       {/* 5. 상세 명세서 (하단 고정) */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white shadow-[0_-5px_20px_rgba(0,0,0,0.1)] p-5 z-20 max-w-md mx-auto rounded-t-3xl max-h-[40vh] overflow-y-auto">
+      <div className="p-5 border shadow-sm">
         <div className="flex items-center justify-between pb-2 mb-3 border-b">
           <span className="font-bold text-gray-800">{t.totalNet}</span>
           <span className="text-xs font-bold text-green-600">
@@ -552,6 +521,36 @@ export default function SalaryCalculator({ lang }: { lang: string }) {
               {Math.round(animatedExchangedPay).toLocaleString()}
             </span>
           </div>
+        </div>
+      </div>
+
+      {/* 4. [NEW] 급여 추이 그래프 (최근 6개월) */}
+      <div className="p-5 mb-6 border shadow-sm ">
+        <h3 className="flex items-center gap-2 mb-4 text-sm font-bold text-gray-700">
+          📊 급여 추이 (최근 6개월)
+        </h3>
+
+        {/* 여기에 PrettyAreaChart 적용 */}
+        <PrettyAreaChart2
+          data={graphData.data}
+          labels={graphData.labels}
+          color="#4F46E5" // Indigo 색상
+          height={140}
+        />
+
+        <div className="flex justify-between pt-4 mt-4 text-xs text-gray-500 border-t border-gray-50">
+          <span>
+            이번 달:{" "}
+            <b className="text-indigo-600">{result.net.toLocaleString()}</b>
+          </span>
+          <span>
+            평균:{" "}
+            <b>
+              {Math.round(
+                graphData.data.reduce((a, b) => a + b, 0) / 6
+              ).toLocaleString()}
+            </b>
+          </span>
         </div>
       </div>
 

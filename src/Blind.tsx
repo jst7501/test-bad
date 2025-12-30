@@ -13,11 +13,11 @@ import {
 } from "lucide-react";
 
 // =========================================================
-// [Translation] 다국어 지원
+// [Translation] 5개국어 UI 사전
 // =========================================================
 const UI_DICT: any = {
   kr: {
-    appTitle: "익명게시판",
+    appTitle: "블라인드",
     write: "글쓰기",
     best: "토픽 베스트",
     all: "전체글",
@@ -31,11 +31,9 @@ const UI_DICT: any = {
     register: "등록",
     company: "회사",
     visa: "비자",
-    mainItem: "한국 생활 꿀팁: 비자 연장할 때 꼭 챙겨야 할 서류 BEST 5",
   },
-
   vn: {
-    appTitle: "Cộng đồng", // Community
+    appTitle: "Cộng đồng",
     write: "Viết bài",
     best: "Chủ đề HOT",
     all: "Tất cả",
@@ -49,14 +47,11 @@ const UI_DICT: any = {
     register: "Đăng",
     company: "Cty",
     visa: "Visa",
-    // mainItem: 한국 생활 꿀팁: 비자 연장할 때 꼭 챙겨야 할 서류 BEST 5 베트남어로 번역
-    mainItem:
-      "Meo vặt cuộc sống ở Hàn Quốc: 5 giấy tờ cần thiết khi gia hạn visa",
   },
   kh: {
-    appTitle: "សហគមន៍", // Community
+    appTitle: "សហគមន៍",
     write: "សរសេរ",
-    best: "ពេញនិយម", // Popular
+    best: "ពេញនិយម",
     all: "ទាំងអស់",
     placeholder: "ស្វែងរកប្រធានបទ",
     likes: "ចូលចិត្ត",
@@ -65,15 +60,14 @@ const UI_DICT: any = {
     inputComment: "សរសេរមតិ...",
     postPlaceholder: "ចែករំលែករឿងរ៉ាវការងាររបស់អ្នក។",
     postTitle: "បញ្ចូលចំណងជើង",
-    register: "បង្ហោះ", // Post
+    register: "បង្ហោះ",
     company: "ក្រុមហ៊ុន",
     visa: "ទិដ្ឋាការ",
-    mainItem: "គន្លឹះរស់នៅកូរ៉េ៖ ឯកសារចាំបាច់ ៥ ឯកសារដើម្បីពង្រីកទិដ្ឋាការ",
   },
   mm: {
-    appTitle: "ကွန်မြူနတီ", // Community
+    appTitle: "ကွန်မြူနတီ",
     write: "စာရေးမည်",
-    best: "လူကြိုက်များ", // Popular
+    best: "လူကြိုက်များ",
     all: "အားလုံး",
     placeholder: "ခေါင်းစဉ်ရှာရန်",
     likes: "ကြိုက်",
@@ -85,16 +79,14 @@ const UI_DICT: any = {
     register: "တင်မည်",
     company: "ကုမ္ပဏီ",
     visa: "ဗီဇာ",
-    mainItem:
-      "ကိုရီးယားမှာနေထိုင်ဖို့ အကြံပြုချက်များ: ဗီဇာတိုးချဲ့ရာတွင် လိုအပ်သော စာရွက်စာတမ်း ၅ မျိုး",
   },
   uz: {
-    appTitle: "Hamjamiyat", // Community
+    appTitle: "Hamjamiyat",
     write: "Yozish",
     best: "Eng zo'r",
     all: "Barchasi",
     placeholder: "Mavzuni qidirish",
-    likes: "Tavsiya", // Recommend
+    likes: "Tavsiya",
     comments: "Izohlar",
     views: "Ko'rish",
     inputComment: "Izoh qoldiring...",
@@ -103,67 +95,14 @@ const UI_DICT: any = {
     register: "Chop etish",
     company: "Kompaniya",
     visa: "Viza",
-    mainItem:
-      "Koreyada yashash bo'yicha maslahatlar: Viza uzaytirishda kerak bo'ladigan 5 ta hujjat",
   },
 };
-// =========================================================
-// [Data] 목업 데이터
-// =========================================================
 
-// =========================================================
-// [Types]
-// =========================================================
-type ViewState = "list" | "detail" | "write";
-interface Comment {
-  id: number;
-  author: string;
-  company: string;
-  visa: string;
-  content: string;
-  time: string;
-  likes: number;
-}
-interface Post {
-  id: number;
-  topic: string;
-  title: string;
-  content: string;
-  author: string;
-  company: string;
-  visa: string;
-  likes: number;
-  comments: number;
-  views: number;
-  time: string;
-  isLike: boolean;
-  commentList: Comment[];
-}
-
-// =========================================================
-// [Component] 비자 뱃지
-// =========================================================
-const VisaBadge = ({ type }: { type: string }) => {
-  let color = "bg-gray-100 text-gray-600";
-  if (type.startsWith("E-9")) color = "bg-blue-100 text-blue-700";
-  else if (type.startsWith("E-7")) color = "bg-indigo-100 text-indigo-700";
-  else if (type.startsWith("F-2")) color = "bg-purple-100 text-purple-700";
-  else if (type.startsWith("F-5")) color = "bg-yellow-100 text-yellow-800";
-  else if (type.startsWith("F-6")) color = "bg-pink-100 text-pink-700";
-
-  return (
-    <span
-      className={`text-[10px] px-1.5 py-0.5 rounded font-bold ml-1.5 ${color}`}
-    >
-      {type}
-    </span>
-  );
-};
 // =========================================================
 // [Data Generator] 5개국어 게시글 & 댓글 데이터
 // =========================================================
-export const getMockPosts = (lang: string) => {
-  const l = (obj: any) => obj[lang] || obj["kr"]; // 언어 선택 헬퍼
+const getMockPosts = (lang: string) => {
+  const l = (obj: any) => obj[lang] || obj["kr"];
 
   const RAW_DATA = [
     {
@@ -189,9 +128,8 @@ export const getMockPosts = (lang: string) => {
         mm: "TOPIK 3 ရပြီး လစာ သိန်း ၃၂၀ လောက်ရှိတယ်။ အသက် ၂၉ နှစ်ဆို အမှတ်မှီလား။ မနှစ်က ကျထားလို့ စိုးရိမ်နေတယ်။",
         uz: "TOPIK 3 oldim, yillik maoshim 32 mln von. Yoshim 29 da, ball yetadimi? O'tgan yili o'tolmagandim.",
       },
-
       author: "코리안드림",
-      company: "Samsung Heavy Ind.",
+      company: "Samsung Heavy",
       visa: "E-9",
       likes: 45,
       comments: 3,
@@ -284,11 +222,11 @@ export const getMockPosts = (lang: string) => {
           likes: 20,
           time: "30m",
           content: {
-            kr: "ㅋㅋㅋ 우리 사장님도 그래요. 한국 사장님들 특징인가?",
-            vn: "Kkk giám đốc bên này cũng thế. Đặc trưng sếp Hàn à?",
-            kh: "ហាហា ថៅកែខ្ញុំក៏ចឹងដែរ។ ជាទម្លាប់ថៅកែកូរ៉េមែន?",
-            mm: "ဟားဟား ငါတို့သူဌေးလည်း အတူတူပဲ။ ကိုရီးယားသူဌေးတွေ စရိုက်လား?",
-            uz: "Xaxaxa bizni boshliq ham shunaqa. Koreys boshliqlarini odatimi?",
+            kr: "ㅋㅋㅋ 우리 사장님도 그래요.",
+            vn: "Kkk giám đốc bên này cũng thế.",
+            kh: "ហាហា ថៅកែខ្ញុំក៏ចឹងដែរ។",
+            mm: "ဟားဟား ငါတို့သူဌေးလည်း အတူတူပဲ။",
+            uz: "Xaxaxa bizni boshliq ham shunaqa.",
           },
         },
         {
@@ -332,10 +270,10 @@ export const getMockPosts = (lang: string) => {
         uz: "Dollar oshib ketdi, so'mga almashtirsa hech narsa qolmayapti.. Kutayapsizlarmi yoki yuboryapsizmi?",
       },
       author: "환율지킴이",
-      company: "SK Hynix Partner",
+      company: "SK Partner",
       visa: "E-9",
       likes: 156,
-      comments: 4,
+      comments: 3,
       views: 3200,
       time: "2h",
       commentList: [
@@ -384,21 +322,6 @@ export const getMockPosts = (lang: string) => {
             uz: "Keyingi oy ozgina tushsa kerak.",
           },
         },
-        {
-          id: 304,
-          author: "새내기",
-          company: "Textile",
-          visa: "E-9",
-          likes: 1,
-          time: "1m",
-          content: {
-            kr: "어떤 앱으로 보내는게 제일 좋아요?",
-            vn: "Dùng app nào gửi là tốt nhất?",
-            kh: "ប្រើកម្មវិធីអ្វីផ្ញើល្អបំផុត?",
-            mm: "ဘယ် App နဲ့လွှဲတာ အကောင်းဆုံးလဲ?",
-            uz: "Qaysi ilova orqali yuborgan yaxshi?",
-          },
-        },
       ],
     },
     {
@@ -411,11 +334,11 @@ export const getMockPosts = (lang: string) => {
         uz: "Sevgi",
       },
       title: {
-        kr: "한국인 여자친구/남자친구 사귀고 싶어요",
-        vn: "Muốn có người yêu Hàn Quốc",
+        kr: "한국인 여자친구 사귀고 싶어요",
+        vn: "Muốn có bạn gái Hàn Quốc",
         kh: "ចង់មានសង្សារកូរ៉េ",
         mm: "ကိုရီးယား ချစ်သူ လိုချင်တယ်",
-        uz: "Koreys yigit/qiz bilan tanishmoqchiman",
+        uz: "Koreys qiz bilan tanishmoqchiman",
       },
       content: {
         kr: "한국말 열심히 배우고 있는데 만날 기회가 없네요. 동호회나 모임 추천해주세요. 외로워요.",
@@ -440,11 +363,11 @@ export const getMockPosts = (lang: string) => {
           likes: 30,
           time: "2h",
           content: {
-            kr: "언어교환 모임 나가보세요. 근데 한국말 진짜 잘해야 함.",
-            vn: "Đi tham gia trao đổi ngôn ngữ đi. Nhưng tiếng Hàn phải siêu giỏi cơ.",
-            kh: "ទៅចូលរួមកម្មវិធីផ្លាស់ប្តូរភាសាទៅ។ ប៉ុន្តែត្រូវចេះកូរ៉េឲ្យច្បាស់។",
-            mm: "Language exchange ပွဲတွေ သွားကြည့်။ ဒါပေမယ့် ကိုရီးယားစကား တကယ်ကောင်းမှရမယ်။",
-            uz: "Til almashish klublariga boring. Lekin koreys tilini zo'r bilish kerak.",
+            kr: "언어교환 모임 나가보세요.",
+            vn: "Đi tham gia trao đổi ngôn ngữ đi.",
+            kh: "ទៅចូលរួមកម្មវិធីផ្លាស់ប្តូរភាសាទៅ។",
+            mm: "Language exchange ပွဲတွေ သွားကြည့်။",
+            uz: "Til almashish klublariga boring.",
           },
         },
         {
@@ -481,17 +404,17 @@ export const getMockPosts = (lang: string) => {
         uz: "Yotoqxona isitgichi buzildi.. Muzlab qolyapman",
       },
       content: {
-        kr: "사장님한테 말했는데 3일째 안 고쳐줌. 전기장판으로 버티고 있는데 코가 시려워. 이거 노동부에 신고 가능?",
-        vn: "Bảo giám đốc 3 ngày rồi chưa sửa. Đang đắp chăn điện mà mũi vẫn lạnh cóng. Báo bộ lao động được không?",
-        kh: "ប្រាប់ថៅកែ ៣ ថ្ងៃហើយមិនទាន់ជួសជុល។ ប្រើភួយអគ្គិសនីតែនៅតែត្រជាក់។ ប្តឹងក្រសួងការងារបានទេ?",
-        mm: "သူဌေးကိုပြောတာ ၃ ရက်ရှိပြီ မပြင်ပေးဘူး။ လျှပ်စစ်စောင်နဲ့ နေနေရတယ် နှာခေါင်းတွေအေးခဲနေပြီ။ အလုပ်သမားရုံး တိုင်လို့ရလား?",
-        uz: "Boshliqqa aytdim, 3 kun bo'ldi tuzatmayapti. Elektr ko'rpa bilan yotibman, lekin burnim muzlab qoldi. Mehnat vazirligiga aytsam bo'ladimi?",
+        kr: "3일째 안 고쳐줌. 전기장판으로 버티고 있는데 코가 시려워. 신고 가능?",
+        vn: "3 ngày rồi chưa sửa. Đang đắp chăn điện mà mũi vẫn lạnh cóng. Báo cáo được không?",
+        kh: "៣ ថ្ងៃហើយមិនទាន់ជួសជុល។ ប្រើភួយអគ្គិសនីតែនៅតែត្រជាក់។ ប្តឹងបានទេ?",
+        mm: "၃ ရက်ရှိပြီ မပြင်ပေးဘူး။ လျှပ်စစ်စောင်နဲ့ နေနေရတယ် နှာခေါင်းတွေအေးခဲနေပြီ။ တိုင်လို့ရလား?",
+        uz: "3 kun bo'ldi tuzatmayapti. Elektr ko'rpa bilan yotibman. Shikoyat qilsam bo'ladimi?",
       },
       author: "아이스맨",
       company: "Farm Village",
       visa: "E-9",
       likes: 60,
-      comments: 3,
+      comments: 2,
       views: 1100,
       time: "5h",
       commentList: [
@@ -508,21 +431,6 @@ export const getMockPosts = (lang: string) => {
             kh: "ល្មើសស្តង់ដារកន្លែងស្នាក់នៅ អាចប្តូរកន្លែងធ្វើការបាន។",
             mm: "နေထိုင်မှုစံနှုန်း မညီလို့ အလုပ်ပြောင်းခွင့်ရနိုင်တယ်။",
             uz: "Yashash sharoiti talabga javob bermasligi ish joyini o'zgartirishga asos bo'ladi.",
-          },
-        },
-        {
-          id: 502,
-          author: "동료",
-          company: "Plastic",
-          visa: "E-9",
-          likes: 10,
-          time: "3h",
-          content: {
-            kr: "동영상 찍어두세요 증거로.",
-            vn: "Quay video lại làm bằng chứng.",
-            kh: "ថតវីដេអូទុកជាភស្តុតាង។",
-            mm: "သက်သေအဖြစ် ဗီဒီယိုရိုက်ထားပါ။",
-            uz: "Isbot sifatida video olib qo'ying.",
           },
         },
         {
@@ -569,7 +477,7 @@ export const getMockPosts = (lang: string) => {
       company: "Electronics",
       visa: "F-6",
       likes: 15,
-      comments: 3,
+      comments: 2,
       views: 300,
       time: "6h",
       commentList: [
@@ -601,21 +509,6 @@ export const getMockPosts = (lang: string) => {
             kh: "មីហិរ + បាយត្រីកោណ តោះ។",
             mm: "အစပ်ခေါက်ဆွဲ နဲ့ ထမင်းတြိဂံ တွဲစား။",
             uz: "Buldak ramen + kimbap yeb ko'ring.",
-          },
-        },
-        {
-          id: 603,
-          author: "배달비",
-          company: "Auto Parts",
-          visa: "E-7",
-          likes: 5,
-          time: "2h",
-          content: {
-            kr: "배달비 너무 비싸서 그냥 참습니다..",
-            vn: "Phí ship đắt quá nên nhịn..",
-            kh: "ថ្លៃដឹកជញ្ជូនថ្លៃពេក ទ្រាំទៅ..",
-            mm: "ပို့ခဈေးကြီးလို့ ဒီတိုင်းပဲ နေလိုက်တယ်..",
-            uz: "Dostavka qimmatligidan chidayman..",
           },
         },
       ],
@@ -763,7 +656,6 @@ export const getMockPosts = (lang: string) => {
     },
   ];
 
-  // 선택된 언어에 맞춰 데이터 변환
   return RAW_DATA.map((item: any) => ({
     ...item,
     topic: l(item.topic),
@@ -777,21 +669,73 @@ export const getMockPosts = (lang: string) => {
 };
 
 // =========================================================
+// [Types]
+// =========================================================
+type ViewState = "list" | "detail" | "write";
+
+interface Comment {
+  id: number;
+  author: string;
+  company: string;
+  visa: string;
+  content: string;
+  time: string;
+  likes: number;
+}
+interface Post {
+  id: number;
+  topic: string;
+  title: string;
+  content: string;
+  author: string;
+  company: string;
+  visa: string;
+  likes: number;
+  comments: number;
+  views: number;
+  time: string;
+  isLike: boolean;
+  commentList: Comment[];
+}
+
+// =========================================================
+// [Component] 비자 뱃지
+// =========================================================
+const VisaBadge = ({ type }: { type: string }) => {
+  let color = "bg-gray-100 text-gray-600";
+  if (type.startsWith("E-9")) color = "bg-blue-100 text-blue-700";
+  else if (type.startsWith("E-7")) color = "bg-indigo-100 text-indigo-700";
+  else if (type.startsWith("F-2")) color = "bg-purple-100 text-purple-700";
+  else if (type.startsWith("F-5")) color = "bg-yellow-100 text-yellow-800";
+  else if (type.startsWith("F-6")) color = "bg-pink-100 text-pink-700";
+  else if (type.startsWith("H-2")) color = "bg-green-100 text-green-700";
+  else if (type.startsWith("D-2")) color = "bg-orange-100 text-orange-700";
+
+  return (
+    <span
+      className={`text-[10px] px-1.5 py-0.5 rounded font-bold ml-1.5 ${color}`}
+    >
+      {type}
+    </span>
+  );
+};
+
+// =========================================================
 // [Main] Blind App
 // =========================================================
 export default function Blind({ lang }: { lang: string }) {
   const [view, setView] = useState<ViewState>("list");
-  //   const [posts, setPosts] = useState<Post[]>(MOCK_POSTS);
-  const [posts, setPosts] = useState(getMockPosts(lang));
+  // [중요] 함수 호출하여 현재 언어 데이터 가져오기
+  const [posts, setPosts] = useState<Post[]>(getMockPosts(lang));
   const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
-
   const t = UI_DICT[lang] || UI_DICT["kr"];
 
-  // 현재 선택된 포스트 데이터 가져오기
-  const selectedPost = useMemo(
-    () => posts.find((p) => p.id === selectedPostId),
-    [posts, selectedPostId]
-  );
+  // 언어가 바뀌면 게시글 목록도 갱신
+  useMemo(() => {
+    setPosts(getMockPosts(lang));
+  }, [lang]);
+
+  const selectedPost = posts.find((p) => p.id === selectedPostId);
 
   const handlePostClick = (id: number) => {
     setSelectedPostId(id);
@@ -803,9 +747,7 @@ export default function Blind({ lang }: { lang: string }) {
     setSelectedPostId(null);
   };
 
-  const handleWrite = () => {
-    setView("write");
-  };
+  const handleWrite = () => setView("write");
 
   const handleWriteComplete = (title: string, content: string) => {
     const newPost: Post = {
@@ -814,7 +756,7 @@ export default function Blind({ lang }: { lang: string }) {
       title,
       content,
       author: "나그네",
-      company: "Unknown",
+      company: "My Company",
       visa: "E-9",
       likes: 0,
       comments: 0,
@@ -827,7 +769,6 @@ export default function Blind({ lang }: { lang: string }) {
     setView("list");
   };
 
-  // 상세 페이지에서 좋아요/댓글 업데이트용 함수
   const updatePost = (updatedPost: Post) => {
     setPosts(posts.map((p) => (p.id === updatedPost.id ? updatedPost : p)));
   };
@@ -863,26 +804,23 @@ export default function Blind({ lang }: { lang: string }) {
 function PostList({ posts, onPostClick, onWrite, t }: any) {
   return (
     <div className="flex flex-col w-full h-full">
-      {/* 헤더 */}
       <header className="sticky top-0 z-10 flex items-center justify-between px-4 bg-white border-b border-gray-200 h-14 shrink-0">
         <h1 className="text-xl italic font-black tracking-tight text-red-600">
-          TALK
+          BLIND
         </h1>
         <div className="flex gap-4 text-gray-400">
           <Search size={22} />
         </div>
       </header>
 
-      {/* 스크롤 영역 */}
-      <div className="flex-1 overflow-y-auto">
-        {/* 배너/공지 */}
-        <div className="p-4 mb-2 bg-white">
+      <div className="flex-1 pb-20 overflow-y-auto">
+        <div className="p-4 mb-2 bg-white border-b border-gray-100">
           <div className="mb-1 text-xs font-bold text-red-500">{t.best}</div>
           <h2 className="text-lg font-bold leading-snug text-gray-900">
-            {t.mainItem}
+            2025 E-7-4 비자 변경 점수표 총정리 (저장필수)
           </h2>
         </div>
-        {/* 게시글 리스트 */}
+
         <div className="bg-white divide-y divide-gray-100">
           {posts.map((post: Post) => (
             <div
@@ -898,7 +836,7 @@ function PostList({ posts, onPostClick, onWrite, t }: any) {
               <h3 className="text-[15px] font-bold text-gray-900 mb-1 line-clamp-1">
                 {post.title}
               </h3>
-              <p className="mb-3 text-sm leading-relaxed text-gray-600 line-clamp-2">
+              <p className="h-10 mb-3 text-sm leading-relaxed text-gray-600 line-clamp-2">
                 {post.content}
               </p>
 
@@ -932,10 +870,8 @@ function PostList({ posts, onPostClick, onWrite, t }: any) {
             </div>
           ))}
         </div>
-        <div className="h-20"></div> {/* 하단 여백 */}
       </div>
 
-      {/* 글쓰기 버튼 (FAB) */}
       <button
         onClick={onWrite}
         className="absolute bottom-6 right-5 bg-red-600 hover:bg-red-700 text-white p-3.5 rounded-full shadow-lg transition active:scale-95 flex items-center gap-2 z-20"
@@ -980,8 +916,6 @@ function PostDetail({ post, onBack, onUpdate, t }: any) {
       commentList: [...post.commentList, newComment],
     });
     setInput("");
-
-    // 스크롤 아래로
     setTimeout(() => {
       scrollRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
     }, 100);
@@ -989,7 +923,6 @@ function PostDetail({ post, onBack, onUpdate, t }: any) {
 
   return (
     <div className="flex flex-col w-full h-full duration-200 bg-white animate-in slide-in-from-right">
-      {/* 헤더 */}
       <header className="sticky top-0 z-20 flex items-center justify-between px-2 bg-white border-b border-gray-100 h-14 shrink-0">
         <button
           onClick={onBack}
@@ -1003,14 +936,12 @@ function PostDetail({ post, onBack, onUpdate, t }: any) {
         </button>
       </header>
 
-      {/* 컨텐츠 스크롤 영역 */}
-      <div className="flex-1 pb-20 overflow-y-auto">
+      <div className="flex-1 pb-20 overflow-y-auto scrollbar-hide">
         <div className="p-5 border-b border-gray-100">
           <h1 className="mb-4 text-xl font-bold leading-snug text-gray-900">
             {post.title}
           </h1>
 
-          {/* 작성자 정보 (핵심 요청 사항) */}
           <div className="flex items-center gap-3 mb-6">
             <div className="flex items-center justify-center w-10 h-10 bg-gray-100 rounded-full">
               <span className="text-lg">🏢</span>
@@ -1043,7 +974,6 @@ function PostDetail({ post, onBack, onUpdate, t }: any) {
           </div>
         </div>
 
-        {/* 버튼 영역 */}
         <div className="flex h-12 border-b border-gray-100">
           <button
             onClick={handleLike}
@@ -1061,11 +991,10 @@ function PostDetail({ post, onBack, onUpdate, t }: any) {
           </button>
         </div>
 
-        {/* 댓글 리스트 */}
         <div className="bg-gray-50 min-h-[200px] p-4 space-y-4" ref={scrollRef}>
           {post.commentList.length === 0 ? (
             <div className="py-10 text-sm text-center text-gray-400">
-              첫 번째 댓글을 남겨보세요.
+              Empty...
             </div>
           ) : (
             post.commentList.map((cmt: Comment) => (
@@ -1101,7 +1030,6 @@ function PostDetail({ post, onBack, onUpdate, t }: any) {
         </div>
       </div>
 
-      {/* 댓글 입력창 (Fixed Bottom) */}
       <div className="absolute bottom-0 z-30 flex items-center w-full gap-2 p-3 bg-white border-t border-gray-200">
         <input
           type="text"
@@ -1135,7 +1063,7 @@ function WritePage({ onBack, onComplete, t }: any) {
 
   return (
     <div className="flex flex-col w-full h-full duration-300 bg-white animate-in slide-in-from-bottom">
-      <header className="flex items-center justify-between px-4 border-b border-gray-100 h-14">
+      <header className="flex items-center justify-between px-4 border-b border-gray-100 h-14 shrink-0">
         <button onClick={onBack} className="text-sm text-gray-600">
           취소
         </button>
@@ -1150,26 +1078,25 @@ function WritePage({ onBack, onComplete, t }: any) {
           {t.register}
         </button>
       </header>
-      <div className="flex flex-col h-full p-5">
+      <div className="flex flex-col h-full p-5 overflow-y-auto">
         <input
           type="text"
           placeholder={t.postTitle}
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="py-3 mb-4 text-lg font-bold placeholder-gray-300 border-b border-gray-100 outline-none"
+          className="py-3 mb-4 text-lg font-bold placeholder-gray-300 border-b border-gray-100 outline-none shrink-0"
         />
         <textarea
           placeholder={t.postPlaceholder}
           value={content}
           onChange={(e) => setContent(e.target.value)}
-          className="flex-1 text-base leading-relaxed placeholder-gray-300 outline-none resize-none"
+          className="flex-1 resize-none outline-none text-base leading-relaxed placeholder-gray-300 min-h-[300px]"
         ></textarea>
       </div>
-      {/* 키보드 위 툴바 */}
-      <div className="flex gap-4 p-3 text-gray-400 border-t border-gray-100">
+      <div className="flex gap-4 p-3 text-gray-400 border-t border-gray-100 shrink-0 safe-area-bottom">
         <Camera size={20} />
         <div className="w-[1px] h-5 bg-gray-200"></div>
-        <span className="flex items-center text-xs"># 토픽 선택</span>
+        <span className="flex items-center text-xs"># Topic</span>
       </div>
     </div>
   );

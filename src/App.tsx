@@ -5,6 +5,7 @@ import RemittanceAnalyzer from "./RemittanceAnalyzer";
 import VisaSimulator from "./VisaSimulator";
 import Carrot from "./Carrot";
 import Blind from "./Blind";
+import Medical from "./Medical";
 
 // 1. 번역 데이터 확장
 export const TRANSLATIONS: any = {
@@ -16,6 +17,7 @@ export const TRANSLATIONS: any = {
     tabVisa: "비자 정보",
     tabCarrot: "중고 장터",
     tabTalk: "익명 게시판",
+    tabMedical: "의료 정보",
   },
   vn: {
     name: "Tiếng Việt",
@@ -25,6 +27,8 @@ export const TRANSLATIONS: any = {
     tabVisa: "Visa",
     tabCarrot: "Chợ Cũ",
     tabTalk: "talk",
+
+    tabMedical: "Thông Tin Y Tế",
   },
   kh: {
     name: "ខ្មែរ",
@@ -34,6 +38,7 @@ export const TRANSLATIONS: any = {
     tabVisa: "ទិដ្ឋាការ",
     tabCarrot: "ផ្សារ",
     tabTalk: "talk",
+    tabMedical: "ព័ត៌មានវេជ្ជសាស្រ្ត",
   },
   mm: {
     name: "မြန်မာ",
@@ -43,6 +48,7 @@ export const TRANSLATIONS: any = {
     tabVisa: "ဗီဇာ",
     tabCarrot: "ဈေး",
     tabTalk: "talk",
+    tabMedical: "ဆေးဘက်ဆိုင်ရာသတင်းအချက်အလက်",
   },
   uz: {
     name: "O'zbek",
@@ -52,6 +58,7 @@ export const TRANSLATIONS: any = {
     tabVisa: "Viza",
     tabCarrot: "Bozor",
     tabTalk: "Forum",
+    tabMedical: "Tibbiy Ma'lumotlar",
   },
 };
 
@@ -93,6 +100,12 @@ const TABS = [
     labelKey: "tabTalk",
     color: "text-red-700 bg-red-50",
   },
+  {
+    id: "Medical",
+    icon: "🏥",
+    labelKey: "tabMedical",
+    color: "text-red-700 bg-red-50",
+  },
 ] as const;
 
 type TabId = (typeof TABS)[number]["id"];
@@ -114,8 +127,8 @@ function App() {
   const t = TRANSLATIONS[lang];
 
   return (
-    <div className="flex flex-col items-center min-h-screen font-sans bg-gray-50">
-      <div className="w-full max-w-sm bg-white shadow-2xl h-[100dvh] flex flex-col relative border-x border-gray-100">
+    <div className="flex flex-col items-center min-h-screen font-sans bg-gray-50 ">
+      <div className="w-full max-w-lg bg-white shadow-2xl h-[100dvh] flex flex-col relative border-x border-gray-100">
         {/* 상단: 언어 선택 */}
         <div className="z-50 flex items-center justify-between p-3 bg-white border-b shrink-0">
           <span className="text-lg font-bold tracking-tight text-gray-800">
@@ -143,6 +156,7 @@ function App() {
             {activeTab === "visa" && <VisaSimulator lang={lang} />}
             {activeTab === "carrot" && <Carrot lang={lang} />}
             {activeTab === "talk" && <Blind lang={lang} />}
+            {activeTab === "Medical" && <Medical lang={lang} />}
           </div>
         </div>
 
