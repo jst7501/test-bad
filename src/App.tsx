@@ -33,7 +33,7 @@ import FoodMap from "./FoodMap";
 // [Data] 유저 및 홈 화면 목업 데이터
 // =========================================================
 const USER_MOCK = {
-  name: "Kim Chul-soo",
+  name: "Kim -soo",
   nationality: "Vietnam",
   visaType: "E-9",
   visaExpiry: "2026-05-20", // D-Day 계산용
