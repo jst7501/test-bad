@@ -29,6 +29,8 @@ import Medical from "./Medical";
 import CompanyReview from "./CompanyReview";
 import JobSearch from "./JobSearch";
 import FoodMap from "./FoodMap";
+import DocMaker from "./DocMaker";
+import Delivery from "./Delivery";
 // =========================================================
 // [Data] 유저 및 홈 화면 목업 데이터
 // =========================================================
@@ -169,6 +171,8 @@ export const APP_DICT: any = {
       company: "회사리뷰",
       job: "구인구직",
       food: "맛집지도",
+      docMaker: "문서 작성",
+      delivery: "배달 주문",
     },
     welcome: "오늘도 힘내세요! 💪",
   },
@@ -201,6 +205,8 @@ export const APP_DICT: any = {
       company: "Đánh giá công ty",
       job: "Tuyển dụng",
       food: "Quán ăn",
+      docMaker: "Soạn thảo văn bản",
+      delivery: "Đặt giao hàng",
     },
     welcome: "Cố lên bạn nhé! 💪",
   },
@@ -233,6 +239,8 @@ export const APP_DICT: any = {
       company: "ពិនិត្យក្រុមហ៊ុន",
       job: "ស្វែងរកការងារ",
       food: "ផែនទីម្ហូប",
+      docMaker: "រៀបចំឯកសារ",
+      delivery: "បញ្ជាទិញ",
     },
     welcome: "ស៊ូៗណា! 💪",
   },
@@ -265,6 +273,8 @@ export const APP_DICT: any = {
       company: "ကုမ္ပဏီသုံးသပ်ချက်",
       job: "အလုပ်ရှာဖွေခြင်း",
       food: "အစားအစာမြေပုံ",
+      docMaker: "စာရွက်စာတမ်းပြုစုခြင်း",
+      delivery: "အိမ်သွားပို့ဆောင်ခြင်း",
     },
     welcome: "ဒီနေ့လည်း အားတင်းထား! 💪",
   },
@@ -297,6 +307,8 @@ export const APP_DICT: any = {
       company: "Kompaniya sharhlari",
       job: "Ish qidirish",
       food: "Oziq-ovqat xaritasi",
+      docMaker: "Hujjat tayyorlash",
+      delivery: "Yetkazib berish",
     },
     welcome: "Bugun ham omad! 💪",
   },
@@ -364,6 +376,18 @@ const TOOLS = [
     id: "food",
     icon: "🍜",
     color: "bg-orange-100 text-orange-700",
+    cat: "living",
+  },
+  {
+    id: "docMaker",
+    icon: "📝",
+    color: "bg-lime-100 text-lime-700",
+    cat: "comm",
+  },
+  {
+    id: "delivery",
+    icon: "🍱",
+    color: "bg-pink-100 text-pink-700",
     cat: "living",
   },
 ];
@@ -443,6 +467,8 @@ export default function App() {
             {activeTool === "company" && <CompanyReview lang={lang} />}
             {activeTool === "job" && <JobSearch lang={lang} />}
             {activeTool === "food" && <FoodMap lang={lang} />}
+            {activeTool === "docMaker" && <DocMaker lang={lang} />}
+            {activeTool === "delivery" && <Delivery lang={lang} />}
           </div>
         </div>
       </div>
