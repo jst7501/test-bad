@@ -6,6 +6,7 @@ import VisaSimulator from "./VisaSimulator";
 import Carrot from "./Carrot";
 import Blind from "./Blind";
 import Medical from "./Medical";
+import Club from "./Club";
 
 // 1. 번역 데이터 확장
 export const TRANSLATIONS: any = {
@@ -18,6 +19,7 @@ export const TRANSLATIONS: any = {
     tabCarrot: "중고 장터",
     tabTalk: "익명 게시판",
     tabMedical: "의료 정보",
+    tabClub: "동호회",
   },
   vn: {
     name: "Tiếng Việt",
@@ -29,6 +31,7 @@ export const TRANSLATIONS: any = {
     tabTalk: "talk",
 
     tabMedical: "Thông Tin Y Tế",
+    tabClub: "Câu Lạc Bộ",
   },
   kh: {
     name: "ខ្មែរ",
@@ -39,6 +42,7 @@ export const TRANSLATIONS: any = {
     tabCarrot: "ផ្សារ",
     tabTalk: "talk",
     tabMedical: "ព័ត៌មានវេជ្ជសាស្រ្ត",
+    tabClub: "ក្លឹប",
   },
   mm: {
     name: "မြန်မာ",
@@ -49,6 +53,7 @@ export const TRANSLATIONS: any = {
     tabCarrot: "ဈေး",
     tabTalk: "talk",
     tabMedical: "ဆေးဘက်ဆိုင်ရာသတင်းအချက်အလက်",
+    tabClub: "ကလပ်",
   },
   uz: {
     name: "O'zbek",
@@ -59,6 +64,7 @@ export const TRANSLATIONS: any = {
     tabCarrot: "Bozor",
     tabTalk: "Forum",
     tabMedical: "Tibbiy Ma'lumotlar",
+    tabClub: "Klub",
   },
 };
 
@@ -105,6 +111,12 @@ const TABS = [
     icon: "🏥",
     labelKey: "tabMedical",
     color: "text-red-700 bg-red-50",
+  },
+  {
+    id: "club",
+    icon: "🎉",
+    labelKey: "tabClub",
+    color: "text-yellow-700 bg-yellow-50",
   },
 ] as const;
 
@@ -157,6 +169,7 @@ function App() {
             {activeTab === "carrot" && <Carrot lang={lang} />}
             {activeTab === "talk" && <Blind lang={lang} />}
             {activeTab === "Medical" && <Medical lang={lang} />}
+            {activeTab === "club" && <Club lang={lang} />}
           </div>
         </div>
 

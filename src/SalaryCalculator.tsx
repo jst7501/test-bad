@@ -359,7 +359,11 @@ export default function SalaryCalculator({ lang }: { lang: string }) {
           </div>
         </div>
       </details>
-
+      <div className="mb-4">
+        <p className="mb-2 text-xs font-bold text-gray-500">
+          일반 터치: 근무/비근무 토글 | 길게 누르기: 근무시간 설정
+        </p>
+      </div>
       {/* 3. 달력 컨트롤 */}
       <div className="flex items-center justify-between px-2 mb-2">
         <button
