@@ -280,7 +280,7 @@ export default function RemittanceAnalyzer({ lang }: { lang: string }) {
   };
 
   return (
-    <div className="h-full p-4 pb-32 bg-white">
+    <div className="h-full p-4 pb-32 overflow-y-auto bg-white">
       {/* 1. 타이틀 */}
       <div className="flex items-center justify-between px-1 mb-4">
         <h2 className="text-xl font-extrabold text-gray-800">{t.title}</h2>

@@ -264,7 +264,7 @@ export default function SalaryCalculator({ lang }: { lang: string }) {
   const daysInMonth = new Date(year, month + 1, 0).getDate();
 
   return (
-    <div className="min-h-full p-4 pb-64 bg-gray-50">
+    <div className="flex flex-col h-full min-h-full p-4 overflow-y-auto bg-gray-50">
       {/* 1. 계급 카드 */}
       <div className="flex items-center justify-between p-4 mb-4 bg-white border border-gray-100 shadow-sm rounded-2xl">
         <div className="flex items-center gap-3">

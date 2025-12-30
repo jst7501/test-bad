@@ -46,7 +46,7 @@ export default function SeveranceCalculator({ lang }: { lang: string }) {
   }, [startDate, endDate, avgWage, lang]);
 
   return (
-    <div className="flex flex-col min-h-screen pb-20 bg-gray-50">
+    <div className="flex flex-col h-full min-h-screen pb-20 overflow-y-auto bg-gray-50 ">
       {/* 헤더 */}
       <div className="relative px-6 pt-8 pb-10 bg-gradient-to-br from-teal-600 to-teal-800 rounded-b-[2.5rem] shadow-lg">
         <div className="text-center text-white">

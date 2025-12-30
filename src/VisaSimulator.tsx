@@ -86,7 +86,7 @@ const VisaSimulator: React.FC<VisaSimulatorProps> = ({ lang }) => {
   if (!result) return null;
 
   return (
-    <div className="min-h-full pb-32 font-sans bg-gray-50">
+    <div className="h-full min-h-full pb-32 overflow-y-auto font-sans bg-gray-50">
       {/* 1. Score Dashboard (Header) */}
       <div className="bg-gradient-to-br from-purple-600 to-indigo-600 p-6 pt-4 pb-10 rounded-b-[2rem] shadow-xl text-white relative z-10">
         <div className="px-3 py-1 text-xs font-bold rounded-full ">
