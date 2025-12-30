@@ -24,7 +24,7 @@ import Carrot from "./Carrot";
 import Blind from "./Blind";
 import Club from "./Club";
 import Housing from "./Housing";
-import PhonePlan from "./Phoneplan";
+import PhonePlan from "./Phone";
 import Medical from "./Medical";
 import CompanyReview from "./CompanyReview";
 import JobSearch from "./JobSearch";
