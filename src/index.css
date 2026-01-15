@@ -10,9 +10,11 @@ body {
   font-family: "Noto Sans KR", "Noto Sans Khmer", "Noto Sans Myanmar",
     sans-serif;
   height: 100%;
+  overflow: hidden; /* 스크롤 방지하여 브라우저 바 움직임 억제 */
   overscroll-behavior-y: none; /* 모바일에서 당겨서 새로고침 등 방지 */
 }
 
 html {
   height: 100%;
+  overflow: hidden;
 }

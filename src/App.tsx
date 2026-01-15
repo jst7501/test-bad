@@ -891,7 +891,7 @@ export default function App() {
         </div>
 
         {/* === Bottom Navigation === */}
-        <div className="z-50 flex justify-around p-2 pb-5 bg-white border-t border-gray-200 shrink-0 safe-area-bottom">
+        <div className="z-50 flex justify-around p-2 bg-white border-t border-gray-200 shrink-0 pb-[calc(1.25rem+env(safe-area-inset-bottom))]">
           <button
             onClick={() => setMainTab("home")}
             className={`flex-1 flex flex-col items-center gap-1 p-2 rounded-xl transition ${
