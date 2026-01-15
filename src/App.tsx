@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import {
   Home,
   MessageCircle,
@@ -16,21 +16,28 @@ import {
 } from "lucide-react";
 
 // Sub-components (같은 폴더에 파일들이 있어야 합니다)
-import SalaryCalculator from "./SalaryCalculator";
-import SeveranceCalculator from "./SeveranceCalculator";
-import RemittanceAnalyzer from "./RemittanceAnalyzer";
-import VisaSimulator from "./VisaSimulator";
-import Carrot from "./Carrot";
-import Blind from "./Blind";
-import Club from "./Club";
-import Housing from "./Housing";
-import PhonePlan from "./Phone";
-import Medical from "./Medical";
-import CompanyReview from "./CompanyReview";
-import JobSearch from "./JobSearch";
-import FoodMap from "./FoodMap";
-import DocMaker from "./DocMaker";
-import Delivery from "./Delivery";
+// Sub-components (Refactored to features)
+import SalaryCalculator from "./features/finance/SalaryCalculator";
+// import SeveranceCalculator from "./features/finance/SeveranceCalculator";
+import RemittanceAnalyzer from "./features/finance/RemittanceAnalyzer";
+import DepartureGuarantee from "./features/finance/DepartureGuarantee";
+
+import VisaSimulator from "./features/living/VisaSimulator";
+import Housing from "./features/living/Housing";
+import PhonePlan from "./features/living/Phone";
+import Medical from "./features/living/Medical";
+import FoodMap from "./features/living/FoodMap";
+import Delivery from "./features/living/Delivery";
+import TaxiCall from "./features/living/TaxiCall";
+import KiipHelper from "./features/living/KiipHelper";
+import Hotlines from "./features/living/Hotlines";
+
+import Carrot from "./features/community/Carrot";
+import Blind from "./features/community/Blind";
+import Club from "./features/community/Club";
+import CompanyReview from "./features/community/CompanyReview";
+import JobSearch from "./features/community/JobSearch";
+import DocMaker from "./features/community/DocMaker"; // [Modified] TaxiCall Component Import
 // =========================================================
 // [Data] 유저 및 홈 화면 목업 데이터
 // =========================================================
@@ -160,6 +167,7 @@ export const APP_DICT: any = {
     tools: {
       salary: "급여 계산기",
       severance: "퇴직금 계산",
+      dgi: "출국만기보험",
       remit: "송금 분석",
       visa: "비자 시뮬",
       housing: "방 구하기",
@@ -173,6 +181,9 @@ export const APP_DICT: any = {
       food: "맛집지도",
       docMaker: "문서 작성",
       delivery: "배달 주문",
+      taxi: "택시 호출", // [Modified] Translation for Taxi
+      hotline: "필수 전화",
+      kiip: "사회통합 (KIIP)",
     },
     welcome: "오늘도 힘내세요! 💪",
   },
@@ -194,6 +205,7 @@ export const APP_DICT: any = {
     tools: {
       salary: "Tính lương",
       severance: "Thôi việc",
+      dgi: "Bảo hiểm xuất cảnh",
       remit: "Gửi tiền",
       visa: "Visa",
       housing: "Thuê nhà",
@@ -207,6 +219,9 @@ export const APP_DICT: any = {
       food: "Quán ăn",
       docMaker: "Soạn thảo văn bản",
       delivery: "Đặt giao hàng",
+      taxi: "Gọi Taxi", // [Modified] Translation for Taxi
+      hotline: "SDT Khẩn cấp",
+      kiip: "Lớp học KIIP",
     },
     welcome: "Cố lên bạn nhé! 💪",
   },
@@ -228,6 +243,7 @@ export const APP_DICT: any = {
     tools: {
       salary: "ប្រាក់ខែ",
       severance: "ប្រាក់បំណាច់",
+      dgi: "ធានារ៉ាប់រងការចាកចេញ",
       remit: "ផ្ញើប្រាក់",
       visa: "ទិដ្ឋាការ",
       housing: "រកបន្ទប់",
@@ -241,6 +257,9 @@ export const APP_DICT: any = {
       food: "ផែនទីម្ហូប",
       docMaker: "រៀបចំឯកសារ",
       delivery: "បញ្ជាទិញ",
+      taxi: "ហៅតាក់ស៊ី", // [Modified] Translation for Taxi
+      hotline: "លេខបន្ទាន់",
+      kiip: "កម្មវិធី KIIP",
     },
     welcome: "ស៊ូៗណា! 💪",
   },
@@ -262,6 +281,7 @@ export const APP_DICT: any = {
     tools: {
       salary: "လစာ",
       severance: "ဆုကြေး",
+      dgi: "ထွက်ခွာမှုအာမခံ",
       remit: "ငွေလွှဲ",
       visa: "ဗီဇာ",
       housing: "အိမ်ငှား",
@@ -275,6 +295,9 @@ export const APP_DICT: any = {
       food: "အစားအစာမြေပုံ",
       docMaker: "စာရွက်စာတမ်းပြုစုခြင်း",
       delivery: "အိမ်သွားပို့ဆောင်ခြင်း",
+      taxi: "တက္ကစီခေါ်မည်", // [Modified] Translation for Taxi
+      hotline: "အရေးပေါ်ဖုန်း",
+      kiip: "KIIP ပရိုဂရမ်",
     },
     welcome: "ဒီနေ့လည်း အားတင်းထား! 💪",
   },
@@ -296,6 +319,7 @@ export const APP_DICT: any = {
     tools: {
       salary: "Oylik",
       severance: "Ishdan bo'shash",
+      dgi: "Chib ketish sug'urtasi",
       remit: "Pul yuborish",
       visa: "Viza",
       housing: "Uy",
@@ -309,6 +333,9 @@ export const APP_DICT: any = {
       food: "Oziq-ovqat xaritasi",
       docMaker: "Hujjat tayyorlash",
       delivery: "Yetkazib berish",
+      taxi: "Taksi chaqirish", // [Modified] Translation for Taxi
+      hotline: "Favqulodda raqam",
+      kiip: "KIIP Dasturi",
     },
     welcome: "Bugun ham omad! 💪",
   },
@@ -325,17 +352,23 @@ const TOOLS = [
     cat: "finance",
   },
   {
+    id: "dgi",
+    icon: "✈️",
+    color: "bg-emerald-100 text-emerald-700",
+    cat: "finance",
+  },
+  {
     id: "remit",
     icon: "💸",
     color: "bg-blue-100 text-blue-700",
     cat: "finance",
   },
-  {
-    id: "severance",
-    icon: "✈️",
-    color: "bg-teal-100 text-teal-700",
-    cat: "finance",
-  },
+  // {
+  //   id: "severance",
+  //   icon: "✈️",
+  //   color: "bg-teal-100 text-teal-700",
+  //   cat: "finance",
+  // },
   {
     id: "visa",
     icon: "🛂",
@@ -390,6 +423,24 @@ const TOOLS = [
     color: "bg-pink-100 text-pink-700",
     cat: "living",
   },
+  {
+    id: "taxi",
+    icon: "🚕",
+    color: "bg-yellow-100 text-yellow-700",
+    cat: "living",
+  },
+  {
+    id: "hotline",
+    icon: "🚨",
+    color: "bg-red-100 text-red-700",
+    cat: "living",
+  },
+  {
+    id: "kiip",
+    icon: "🎓",
+    color: "bg-indigo-100 text-indigo-700",
+    cat: "comm",
+  },
 ];
 
 // D-Day Helper
@@ -409,7 +460,10 @@ export default function App() {
   const [activeTool, setActiveTool] = useState<string | null>(null);
   const [commTab, setCommTab] = useState<"carrot" | "blind" | "club">("carrot");
   const [lang, setLang] = useState("kr");
+
   const homeData = useMemo(() => getHomeData(lang), [lang]);
+  
+  const scrollRef = useRef<HTMLDivElement>(null); // Added Ref
 
   const getGraphHeight = (val: number, data: number[]) => {
     const min = Math.min(...data);
@@ -423,6 +477,13 @@ export default function App() {
     const savedLang = localStorage.getItem("app-language");
     if (savedLang && APP_DICT[savedLang]) setLang(savedLang);
   }, []);
+
+  // Scroll to top on tab change
+  useEffect(() => {
+    if (scrollRef.current) {
+        scrollRef.current.scrollTop = 0;
+    }
+  }, [mainTab]);
 
   const handleLangChange = (newLang: string) => {
     setLang(newLang);
@@ -458,7 +519,8 @@ export default function App() {
           </div>
           <div className="relative flex-1 overflow-hidden">
             {activeTool === "salary" && <SalaryCalculator lang={lang} />}
-            {activeTool === "severance" && <SeveranceCalculator lang={lang} />}
+            {/* {activeTool === "severance" && <SeveranceCalculator lang={lang} />}/ */}
+            {activeTool === "dgi" && <DepartureGuarantee lang={lang} />}
             {activeTool === "remit" && <RemittanceAnalyzer lang={lang} />}
             {activeTool === "visa" && <VisaSimulator lang={lang} />}
             {activeTool === "housing" && <Housing lang={lang} />}
@@ -469,6 +531,9 @@ export default function App() {
             {activeTool === "food" && <FoodMap lang={lang} />}
             {activeTool === "docMaker" && <DocMaker lang={lang} />}
             {activeTool === "delivery" && <Delivery lang={lang} />}
+            {activeTool === "taxi" && <TaxiCall lang={lang} />}
+            {activeTool === "kiip" && <KiipHelper lang={lang} />}
+            {activeTool === "hotline" && <Hotlines lang={lang} />}
           </div>
         </div>
       </div>
@@ -501,7 +566,7 @@ export default function App() {
         </div>
 
         {/* === Content Area === */}
-        <div className="flex-1 overflow-y-auto bg-gray-50 scrollbar-hide">
+        <div ref={scrollRef} className="flex-1 overflow-y-auto bg-gray-50 scrollbar-hide">
           {/* [Tab 1] Home Dashboard */}
           {mainTab === "home" && (
             <div className="p-5 space-y-5">
@@ -672,7 +737,7 @@ export default function App() {
                   </span>
                 </div>
                 <div className="grid grid-cols-4 gap-3">
-                  {TOOLS.slice(0, 12).map((tool) => (
+                  {TOOLS.map((tool) => (
                     <button
                       key={tool.id}
                       onClick={() => openTool(tool.id)}

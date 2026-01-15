@@ -4,8 +4,8 @@ import {
   calculateScore,
   type VisaFormData,
   type VisaResult,
-} from "./utils/e74Logic"; // 경로 주의: 실제 경로에 맞게 수정해주세요
-import { VISA_DICT } from "./utils/visaDict"; // 경로 주의: 실제 경로에 맞게 수정해주세요
+} from "../../utils/e74Logic"; 
+import { VISA_DICT } from "../../utils/visaDict";
 import {
   CheckCircle,
   XCircle,

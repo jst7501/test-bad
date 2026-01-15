@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 // 위에서 정의한 SEVERANCE_DICT를 import 했다고 가정하거나 같은 파일에 두세요.
-import { SEVERANCE_DICT } from "./constants";
+import { SEVERANCE_DICT } from "../../constants";
 
 export default function SeveranceCalculator({ lang }: { lang: string }) {
   // 언어 선택 (기본값 kr)

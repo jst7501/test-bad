@@ -6,8 +6,8 @@ import {
   TAX_RATES,
   TIERS_MIN,
   TIER_ICONS,
-} from "./constants";
-import { useAnimatedNumber } from "./hooks/useAnimatedNumber";
+} from "../../constants";
+import { useAnimatedNumber } from "../../hooks/useAnimatedNumber";
 import { PrettyAreaChart2 } from "./RemittanceAnalyzer";
 
 interface DayLog {
