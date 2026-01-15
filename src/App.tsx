@@ -543,7 +543,7 @@ export default function App() {
   // 2. 메인 탭 화면
   return (
     <div className="flex flex-col items-center min-h-screen overflow-auto font-sans bg-gray-50">
-      <div className="w-full max-w-lg bg-white shadow-2xl h-[100dvh] flex flex-col relative border-x border-gray-100">
+      <div className="w-full max-w-lg bg-white shadow-2xl h-[100svh] flex flex-col relative border-x border-gray-100">
         {/* === Header === */}
         <div className="sticky top-0 z-30 flex items-center justify-between px-5 bg-white h-14 shrink-0">
           <span className="text-xl font-black tracking-tighter text-indigo-600">

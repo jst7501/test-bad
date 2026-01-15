@@ -9,4 +9,10 @@ body {
   /* 폰트 우선순위: 한국어 -> 캄보디아 -> 미얀마 -> 기본 */
   font-family: "Noto Sans KR", "Noto Sans Khmer", "Noto Sans Myanmar",
     sans-serif;
+  height: 100%;
+  overscroll-behavior-y: none; /* 모바일에서 당겨서 새로고침 등 방지 */
+}
+
+html {
+  height: 100%;
 }
